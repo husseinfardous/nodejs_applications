@@ -1,0 +1,11 @@
+{
+  "name": "note-application",
+  "version": "1.0.0",
+  "description": "This application allows users to take notes by enabling them to perform simple operations on notes (such as creating a note and fetching a note).",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hussein Fardous",
+  "license": "ISC"
+}
