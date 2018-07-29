@@ -44,3 +44,10 @@ if (operation === "add") {
         console.log("Note Title is Taken!");
     }
 }
+
+// Remove a Note
+else if (operation === "remove") {
+    var noteRemoved = note.removeNote(argv.title);
+    var message = noteRemoved ? "Note was Removed!": "Note not Found!";
+    console.log(message);
+}
