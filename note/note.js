@@ -1,6 +1,6 @@
 // Note Operations
 
-// Add, Remove, List
+// Add, Remove, Get
 
 
 
@@ -10,32 +10,6 @@
 
 // Core Module
 const fs = require("fs");
-
-
-
-// Note Helper Functions
-
-// Save Notes by Writing to "notes-data.json" File
-var saveNotes = (notes) => {
-    fs.writeFileSync("notes-data.json", JSON.stringify(notes));
-};
-
-// Fetch all Existing Notes
-var fetchNotes = () => {
-    
-    // Fetch all Existing Notes
-    // Error is Generated if "notes-data.json" File doesn't Exist
-    try {
-        var notesString = fs.readFileSync("notes-data.json");
-        return JSON.parse(notesString);
-    }
-    
-    // Catch the Generated Error
-    // No Existing Notes
-    catch(err) {
-        return [];
-    }
-};
 
 
 
@@ -88,11 +62,65 @@ var removeNote = (title) => {
     return notes.length !== filteredNotes.length;
 };
 
+// Get a Note
+var getNote = (title) => {
+
+    // Fetch all Existing Notes
+    // Existing Data is Lost by Writing to the "notes-data.json" File
+    // Prevent Loss of Existing Notes by Storing them
+    var notes = fetchNotes();
+
+    // Store Note that has the Title of Target Note
+    var filteredNotes = notes.filter((note) => note.title === title);
+
+    // Return Target Note
+    return filteredNotes[0];
+};
+
+
+
+// Note Helper Functions
+
+// Save Notes by Writing to "notes-data.json" File
+var saveNotes = (notes) => {
+    fs.writeFileSync("notes-data.json", JSON.stringify(notes));
+};
+
+// Fetch all Existing Notes
+var fetchNotes = () => {
+    
+    // Fetch all Existing Notes
+    // Error is Generated if "notes-data.json" File doesn't Exist
+    try {
+        var notesString = fs.readFileSync("notes-data.json");
+        return JSON.parse(notesString);
+    }
+    
+    // Catch the Generated Error
+    // No Existing Notes
+    catch(err) {
+        return [];
+    }
+};
+
+
+
+// Utility Function
+
+// Log a Note
+var logNote = (note) => {
+    console.log();
+    console.log(`Title: ${note.title}`);
+    console.log(`Body: ${note.body}`);
+};
+
 
 
 // Data to Export
 // Exported Data is Stored in "require('<path-to-note.js>/note.js')"
 module.exports = {
     addNote,
-    removeNote
+    removeNote,
+    getNote,
+    logNote
 };

@@ -36,9 +36,7 @@ if (operation === "add") {
     var newNote = note.addNote(argv.title, argv.body);
     if (newNote) {
         console.log("New Note Created!");
-        console.log();
-        console.log(`Title: ${newNote.title}`);
-        console.log(`Body: ${newNote.body}`);
+        note.logNote(newNote);
     }
     else {
         console.log("Note Title is Taken!");
@@ -50,4 +48,16 @@ else if (operation === "remove") {
     var noteRemoved = note.removeNote(argv.title);
     var message = noteRemoved ? "Note was Removed!": "Note not Found!";
     console.log(message);
+}
+
+// Get a Note
+else if (operation === "get") {
+    var targetNote = note.getNote(argv.title);
+    if (targetNote) {
+        console.log("Note Found!");
+        note.logNote(targetNote);
+    }
+    else {
+        console.log("Note not Found!");
+    }
 }
