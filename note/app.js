@@ -21,8 +21,39 @@ const note = require("./note.js");
 
 
 
+// Specify Arguments to User and Require them
+// Display Helpful Information about Arguments
 // Fetch Command Line Arguments
-const argv = yargs.argv;
+const argv = yargs
+    .command("add", "Add a Note", {
+        title: {
+            describe: "Title of Note",
+            demand: true,
+            alias: "t"
+        },
+        body: {
+            describe: "Body of Note",
+            demand: true,
+            alias: "b"
+        }
+    })
+    .command("remove", "Remove a Note", {
+        title: {
+            describe: "Title of Note",
+            demand: true,
+            alias: "t"
+        }
+    })
+    .command("get", "Get a Note", {
+        title: {
+            describe: "Title of Note",
+            demand: true,
+            alias: "t"
+        }
+    })
+    .command("list", "Get all Notes")
+    .help()
+    .argv;
 
 // Fetch Operation
 var operation = argv._[0]
@@ -68,7 +99,7 @@ else if (operation === "list") {
     var allNotes = note.getAll();
     
     if (allNotes.length) {
-        console.log(`Printing ${allNotes.length} note(s).`);
+        console.log(`Printing ${allNotes.length} note(s)!`);
         allNotes.forEach((note_obj) => note.logNote(note_obj));
     }
     else {
