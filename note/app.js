@@ -1,7 +1,7 @@
 // Note Application
 
 // Allows Users to Take Notes
-// Enables Users to Perform Simple Operations on Notes (such as Creating a Note and Fetching Notes)
+// Enables Users to Perform Simple Operations on Notes (such as Creating a Note and Fetching a Note)
 
 
 
@@ -60,4 +60,23 @@ else if (operation === "get") {
     else {
         console.log("Note not Found!");
     }
+}
+
+// Get all Notes
+else if (operation === "list") {
+
+    var allNotes = note.getAll();
+    
+    if (allNotes.length) {
+        console.log(`Printing ${allNotes.length} note(s).`);
+        allNotes.forEach((note_obj) => note.logNote(note_obj));
+    }
+    else {
+        console.log("No Notes Found!");
+    }
+}
+
+// Invalid Operation
+else {
+    console.log("Invalid Operation!");
 }

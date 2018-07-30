@@ -1,6 +1,6 @@
 // Note Operations
 
-// Add, Remove, Get
+// Add, Remove, Get, and Get All
 
 
 
@@ -66,8 +66,6 @@ var removeNote = (title) => {
 var getNote = (title) => {
 
     // Fetch all Existing Notes
-    // Existing Data is Lost by Writing to the "notes-data.json" File
-    // Prevent Loss of Existing Notes by Storing them
     var notes = fetchNotes();
 
     // Store Note that has the Title of Target Note
@@ -75,6 +73,11 @@ var getNote = (title) => {
 
     // Return Target Note
     return filteredNotes[0];
+};
+
+// Get all Notes
+var getAll = () => {
+    return fetchNotes();
 };
 
 
@@ -122,5 +125,6 @@ module.exports = {
     addNote,
     removeNote,
     getNote,
+    getAll,
     logNote
 };
