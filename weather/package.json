@@ -1,0 +1,11 @@
+{
+  "name": "weather-application",
+  "version": "1.0.0",
+  "description": "This application uses the Google APIs and the Dark Sky API to get the weather for a given address.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hussein Fardous",
+  "license": "ISC"
+}
