@@ -8,8 +8,11 @@
 // Data Modules Send Back (Export) isn't Manipulated
 // Store Exported Data as Constants
 
-// Third Party Modules
+// Third Party Module
 const yargs = require("yargs");
+
+// Local Module
+const geocode = require("./geocode/geocode");
 
 
 
@@ -31,5 +34,13 @@ const argv = yargs
 
 
 
-// Encode Address (Argument) to URL Form
-var encodedAddress = encodeURIComponent(argv.address);
+// Geocode the Given Argument (Address)
+// Handle Errors
+geocode.geocodeAddress(argv.address, (errorMessage, results) => {
+    if (errorMessage) {
+        console.log(errorMessage);
+    }
+    else {
+        console.log(JSON.stringify(results, undefined, 2));
+    }
+});
