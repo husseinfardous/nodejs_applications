@@ -1,0 +1,11 @@
+{
+  "name": "chat-application",
+  "version": "1.0.0",
+  "description": "This application uses socket.io to allow different users to chat with each other.",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hussein Fardous",
+  "license": "ISC"
+}
