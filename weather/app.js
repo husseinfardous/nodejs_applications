@@ -35,6 +35,8 @@ const argv = yargs
 
 
 
+// Wire Up Weather Search by Chaining Callbacks Together
+
 // Geocode the Given Argument (Address)
 // Handle Errors
 geocode.geocodeAddress(argv.address, (errorMessage, geocodeResults) => {
