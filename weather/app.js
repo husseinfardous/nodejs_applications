@@ -11,8 +11,9 @@
 // Third Party Module
 const yargs = require("yargs");
 
-// Local Module
+// Local Modules
 const geocode = require("./geocode/geocode");
+const weather = require("./weather/weather");
 
 
 
@@ -36,11 +37,35 @@ const argv = yargs
 
 // Geocode the Given Argument (Address)
 // Handle Errors
-geocode.geocodeAddress(argv.address, (errorMessage, results) => {
+geocode.geocodeAddress(argv.address, (errorMessage, geocodeResults) => {
+
+    // Machine Error (Can't Connect to Google Servers) or Invalid Request
+    // Log Error
     if (errorMessage) {
         console.log(errorMessage);
     }
+
+    // Success
     else {
-        console.log(JSON.stringify(results, undefined, 2));
+
+        // Log Address
+        console.log(geocodeResults.address);
+
+        // Fetch Weather for a Given Latitude and Longitude Coordinate
+        // Handle Errors
+        weather.getWeather(geocodeResults.latitude, geocodeResults.longitude, (errorMessage, weatherResults) => {
+
+            // Machine Error (Can't Connect to Dark Sky Server) or Invalid Request
+            // Log Error
+            if (errorMessage) {
+                console.log(errorMessage);
+            }
+
+            // Success
+            // Log Temperature
+            else {
+                console.log(`It is currently ${weatherResults.temperature}, but it feels like ${weatherResults.apparentTemperature}.`);
+            }
+        });
     }
 });
