@@ -10,6 +10,31 @@
         <meta charset = "utf-8">
     </head>
     <body>
-        <p> Welcome to the Chat Application </p>
+        <p> Welcome to the Chat Application! </p>
+        <script src = "/socket.io/socket.io.js"> </script>
+        <script> 
+
+            // Client Side
+
+
+
+            // Client makes Request to Server to Open Web Socket for Persistent Connection between them
+            var socket = io();
+
+
+
+            // Register Event Listeners
+
+            // User Connected to Server
+            socket.on("connect", () => {
+                console.log("Connected to Server!");
+            });
+
+            // User Disconnected from Server
+            socket.on("disconnect", () => {
+                console.log("Disconnected from Server!");
+            });
+            
+        </script>
     </body>
 </html>
