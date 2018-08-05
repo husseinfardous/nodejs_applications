@@ -16,6 +16,9 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
+// Local Module
+const {generateMessage} = require("./utilities/message");
+
 
 
 // Configure Web Application
@@ -53,18 +56,10 @@ io.on("connection", (socket) => {
     console.log("User Connected to Server!");
 
     // Server Sent a Message to a User (Emit) (Custom Event)
-    socket.emit("fromServerMessage", {
-        from: "Admin",
-        text: "Welcome to the Chat Application!",
-        createdAt: new Date().getTime()
-    });
+    socket.emit("fromServerMessage", generateMessage("Admin", "Welcome to the Chat Application!"));
 
     // Server Sent a Message to All Users Except "this" User (Emit) (Custom Event)
-    socket.broadcast.emit("fromServerMessage", {
-        from: "Admin",
-        text: "A New User Joined!",
-        createdAt: new Date().getTime()
-    });
+    socket.broadcast.emit("fromServerMessage", generateMessage("Admin", "A New User Joined!"));
 
     // Server Received a Message from a User (Listen) (Custom Event)
     socket.on("toServerMessage", (message) => {
@@ -73,11 +68,7 @@ io.on("connection", (socket) => {
         
         // Server Sent a Message to All Users (Emit) (Custom Event)
         // Message: A User's Message
-        io.emit("fromServerMessage", {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
+        io.emit("fromServerMessage", generateMessage(message.from, message.text));
     });
 
     // User Disconnected from Server (Listen) (Core Event)
