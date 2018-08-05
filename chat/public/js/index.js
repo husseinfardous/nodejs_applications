@@ -17,14 +17,7 @@ var socket = io();
 
 // User Connected to Server (Listen) (Core Event)
 socket.on("connect", function() {
-
     console.log("Connected to Server!");
-
-    // User Sent a Message to Server (Emit) (Custom Event)
-    socket.emit("toServerMessage", {
-        from: "Andrew",
-        text: "Hey. This is Andrew."
-    });
 });
 
 // User Disconnected from Server (Listen) (Core Event)

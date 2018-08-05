@@ -52,16 +52,32 @@ io.on("connection", (socket) => {
 
     console.log("User Connected to Server!");
 
-    // Server Sent a Message to All Users (Emit) (Custom Event)
+    // Server Sent a Message to a User (Emit) (Custom Event)
     socket.emit("fromServerMessage", {
-        from: "John",
-        text: "Hey. This is John.",
-        createdAt: 123456
+        from: "Admin",
+        text: "Welcome to the Chat Application!",
+        createdAt: new Date().getTime()
     });
 
-    // Server Received a Message from User (Listen) (Custom Event)
+    // Server Sent a Message to All Users Except "this" User (Emit) (Custom Event)
+    socket.broadcast.emit("fromServerMessage", {
+        from: "Admin",
+        text: "A New User Joined!",
+        createdAt: new Date().getTime()
+    });
+
+    // Server Received a Message from a User (Listen) (Custom Event)
     socket.on("toServerMessage", (message) => {
+        
         console.log("New Message:", message);
+        
+        // Server Sent a Message to All Users (Emit) (Custom Event)
+        // Message: A User's Message
+        io.emit("fromServerMessage", {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
     });
 
     // User Disconnected from Server (Listen) (Core Event)
