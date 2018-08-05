@@ -44,14 +44,27 @@ app.use(express.static(publicPath));
 
 
 
-// Register Event Listeners
+// Register Event Listeners and Emit (Create) Custom Events
 
-// User Connected to Server 
+// User Connected to Server (Listen) (Core Event)
+// Socket provides Bidirectional, Persistent Connection between Client (User) and Server
 io.on("connection", (socket) => {
 
     console.log("User Connected to Server!");
 
-    // User Disconnected from Server
+    // Server Sent a Message to All Users (Emit) (Custom Event)
+    socket.emit("fromServerMessage", {
+        from: "John",
+        text: "Hey. This is John.",
+        createdAt: 123456
+    });
+
+    // Server Received a Message from User (Listen) (Custom Event)
+    socket.on("toServerMessage", (message) => {
+        console.log("New Message:", message);
+    });
+
+    // User Disconnected from Server (Listen) (Core Event)
     socket.on("disconnect", () => {
         console.log("User Disconnected from Server!");
     });
