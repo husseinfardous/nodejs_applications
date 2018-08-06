@@ -27,13 +27,29 @@ socket.on("disconnect", function() {
 
 // User Received a Message from Server (Listen) (Custom Event)
 socket.on("fromServerMessage", function(message) {
+
     console.log("New Message:", message);
+
+    // Append Ordered List on Webpage with Each Message as List Item
+    var li = jQuery("<li></li>");
+    li.text(`${message.from}: ${message.text}`);
+    jQuery("#messages").append(li);
 });
 
-// User Sent a Message to Server (Emit) (Custom Event)
-socket.emit("toServerMessage", {
-    from: "Frank",
-    text: "Hi. This is Frank."
-}, function(response) {
-    console.log(response);
+
+
+// Event Listener
+// Listen to Form Submission
+jQuery("#message-form").on("submit", function(e) {
+
+    // Prevent Page Refresh Process on Form Submission
+    e.preventDefault();
+
+    // User Sent a Message to Server (Emit) (Custom Event)
+    socket.emit("toServerMessage", {
+        from: "User",
+        text: jQuery("[name=message]").val()
+    }, function(response) {
+        console.log(response);
+    });
 });
