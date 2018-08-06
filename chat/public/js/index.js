@@ -29,3 +29,11 @@ socket.on("disconnect", function() {
 socket.on("fromServerMessage", function(message) {
     console.log("New Message:", message);
 });
+
+// User Sent a Message to Server (Emit) (Custom Event)
+socket.emit("toServerMessage", {
+    from: "Frank",
+    text: "Hi. This is Frank."
+}, function(response) {
+    console.log(response);
+});

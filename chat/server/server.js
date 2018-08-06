@@ -62,13 +62,16 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("fromServerMessage", generateMessage("Admin", "A New User Joined!"));
 
     // Server Received a Message from a User (Listen) (Custom Event)
-    socket.on("toServerMessage", (message) => {
+    socket.on("toServerMessage", (message, callback) => {
         
         console.log("New Message:", message);
         
         // Server Sent a Message to All Users (Emit) (Custom Event)
         // Message: A User's Message
         io.emit("fromServerMessage", generateMessage(message.from, message.text));
+
+        // Server Sent an Acknowledgement (User's Message was Received) to User
+        callback("Your Message was Received!");
     });
 
     // User Disconnected from Server (Listen) (Core Event)
