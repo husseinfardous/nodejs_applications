@@ -31,15 +31,33 @@ socket.on("fromServerMessage", function(message) {
     console.log("New Message:", message);
 
     // Append Ordered List on Webpage with Each Message as List Item
+    // Prevent Malicious HTML Injections by using Safe Method li.text() for Dynamic Data as Opposed to using HTML Tag in jQuery()
     var li = jQuery("<li></li>");
     li.text(`${message.from}: ${message.text}`);
     jQuery("#messages").append(li);
 });
 
+// User Received Location from Server (Listen) (Custom Event)
+socket.on("fromServerLocation", function(location) {
+
+    // Create HTML Tags
+    var li = jQuery("<li></li>");
+    var a = jQuery("<a target='_blank'>My Current Location</a>");
+
+    // Prevent Malicious HTML Injections by using Safe Methods li.text() and a.attr() for Dynamic Data as Opposed to using HTML Tags in jQuery()
+    li.text(`${location.from}: `);
+    a.attr("href", location.url);
+
+    // Append Ordered List on Webpage with Each Google Maps URL Link as List Item
+    li.append(a);
+    jQuery("#messages").append(li);
+});
 
 
-// Event Listener
-// Listen to Form Submission
+
+// Register Event Listeners
+
+// Listen for Form Submission
 jQuery("#message-form").on("submit", function(e) {
 
     // Prevent Page Refresh Process on Form Submission
@@ -51,5 +69,26 @@ jQuery("#message-form").on("submit", function(e) {
         text: jQuery("[name=message]").val()
     }, function(response) {
         console.log(response);
+    });
+});
+
+// Listen for "Send Location" Button Click
+var locationButton = jQuery("#send-location");
+locationButton.on("click", function(e) {
+
+    // If Geolocation API not Supported by Old Browser...
+    if (!navigator.geolocation) {
+        return alert("Geolocation is not Supported by your Browser!");
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+
+        // User Sent Location to Server (Emit) (Custom Event)
+        socket.emit("toServerLocation", {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        });
+    }, function() {
+        alert("Unable to Fetch Location!");
     });
 });

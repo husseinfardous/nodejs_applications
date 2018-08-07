@@ -17,7 +17,7 @@ const express = require("express");
 const socketIO = require("socket.io");
 
 // Local Module
-const {generateMessage} = require("./utilities/message");
+const {generateMessage, generateLocationMessage} = require("./utilities/message");
 
 
 
@@ -72,6 +72,13 @@ io.on("connection", (socket) => {
 
         // Server Sent an Acknowledgement (User's Message was Received) to User
         callback("Your Message was Received!");
+    });
+
+    // Server Received Location from a User (Listen) (Custom Event)
+    socket.on("toServerLocation", (coordinates) => {
+
+        // Server Sent a User's Location to All Users (Emit) (Custom Event)
+        io.emit("fromServerLocation", generateLocationMessage("Admin", coordinates.latitude, coordinates.longitude));
     });
 
     // User Disconnected from Server (Listen) (Core Event)

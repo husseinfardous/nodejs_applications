@@ -10,7 +10,18 @@ var generateMessage = (from, text) => {
         from,
         text,
         createdAt: new Date().getTime()
-    }
+    };
+};
+
+
+
+// Generate Location Message
+var generateLocationMessage = (from, lat, lng) => {
+    return {
+        from,
+        url: "https://www.google.com/maps?q=" + lat + "," + lng,
+        createdAt: new Date().getTime()
+    };
 };
 
 
@@ -18,5 +29,6 @@ var generateMessage = (from, text) => {
 // Data to Export
 // Exported Data is Stored in "require('<path-to-message.js>/message.js')"
 module.exports = {
-    generateMessage
+    generateMessage,
+    generateLocationMessage
 };
