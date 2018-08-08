@@ -4,12 +4,21 @@
 
 
 
+// Load Module
+// Data Module Sends Back (Exports) isn't Manipulated
+// Store Exported Data as a Constant
+
+// Third Party Module
+const moment = require("moment");
+
+
+
 // Generate Message
 var generateMessage = (from, text) => {
     return {
         from,
         text,
-        createdAt: new Date().getTime()
+        createdAt: moment().valueOf()
     };
 };
 
@@ -20,7 +29,7 @@ var generateLocationMessage = (from, lat, lng) => {
     return {
         from,
         url: "https://www.google.com/maps?q=" + lat + "," + lng,
-        createdAt: new Date().getTime()
+        createdAt: moment().valueOf() 
     };
 };
 
