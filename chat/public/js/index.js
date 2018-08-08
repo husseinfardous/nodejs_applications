@@ -1,6 +1,6 @@
 // Frontend
 
-// Home Webpage
+// Chat Webpage
 
 
 
@@ -68,7 +68,7 @@ jQuery("#message-form").on("submit", function(e) {
         from: "User",
         text: jQuery("[name=message]").val()
     }, function(response) {
-        console.log(response);
+        jQuery("[name=message]").val("");
     });
 });
 
@@ -81,7 +81,13 @@ locationButton.on("click", function(e) {
         return alert("Geolocation is not Supported by your Browser!");
     }
 
+    // Disable Button to Prevent Spam while in Process of Sending Location
+    locationButton.attr("disabled", "disabled").text("Sending Location...");
+
     navigator.geolocation.getCurrentPosition(function(position) {
+
+        // Re-Enable Button
+        locationButton.removeAttr("disabled").text("Send Location");
 
         // User Sent Location to Server (Emit) (Custom Event)
         socket.emit("toServerLocation", {
@@ -89,6 +95,10 @@ locationButton.on("click", function(e) {
             longitude: position.coords.longitude
         });
     }, function() {
+
+        // Re-Enable Button
+        locationButton.removeAttr("disabled").text("Send Location");
+
         alert("Unable to Fetch Location!");
     });
 });

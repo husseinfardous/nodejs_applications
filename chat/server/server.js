@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
         io.emit("fromServerMessage", generateMessage(message.from, message.text));
 
         // Server Sent an Acknowledgement (User's Message was Received) to User
-        callback("Your Message was Received!");
+        callback();
     });
 
     // Server Received Location from a User (Listen) (Custom Event)
