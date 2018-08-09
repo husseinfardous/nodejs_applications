@@ -13,6 +13,30 @@ var socket = io();
 
 
 
+// Perform Calculation to Determine if User should be Scrolled to Bottom (Latest Messages)
+function scrollToBottom() {
+
+    // Selectors
+    var messages = jQuery("#messages");
+    var newMessage = messages.children("li:last-child");
+
+    // Heights
+    var scrollTop = messages.prop("scrollTop");
+    var clientHeight = messages.prop("clientHeight");
+    var scrollHeight = messages.prop("scrollHeight");
+    var prevMessageHeight = newMessage.prev().innerHeight();
+    var newMessageHeight = newMessage.innerHeight();
+
+    // Calculation
+
+    // User at/near Bottom and should be Automatically Scrolled when New Messages come in
+    if (scrollTop + clientHeight + prevMessageHeight + newMessageHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+};
+
+
+
 // Register Event Listeners and Emit (Create) Custom Events
 
 // User Connected to Server (Listen) (Core Event)
@@ -39,6 +63,9 @@ socket.on("fromServerMessage", function(message) {
         createdAt: formattedTime
     });
     jQuery("#messages").append(html);
+
+    // Determine if User should be Scrolled to Bottom (Latest Messages)
+    scrollToBottom();
 });
 
 // User Received Location from Server (Listen) (Custom Event)
@@ -55,6 +82,9 @@ socket.on("fromServerLocation", function(loc) {
         createdAt: formattedTime
     });
     jQuery("#messages").append(html);
+
+    // Determine if User should be Scrolled to Bottom (Latest Messages)
+    scrollToBottom();
 });
 
 
