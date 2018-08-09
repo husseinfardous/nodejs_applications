@@ -32,10 +32,13 @@ socket.on("fromServerMessage", function(message) {
     var formattedTime = moment(message.createdAt).format("h:mm a");
 
     // Append Ordered List on Webpage with Each Message as List Item
-    // Prevent Malicious HTML Injections by using Safe Method li.text() for Dynamic Data as Opposed to using HTML Tag in jQuery()
-    var li = jQuery("<li></li>");
-    li.text(`${message.from} ${formattedTime}: ${message.text}`);
-    jQuery("#messages").append(li);
+    var template = jQuery("#message-template").html();
+    var html = Mustache.render(template, {
+        from: message.from,
+        text: message.text,
+        createdAt: formattedTime
+    });
+    jQuery("#messages").append(html);
 });
 
 // User Received Location from Server (Listen) (Custom Event)
@@ -44,17 +47,14 @@ socket.on("fromServerLocation", function(loc) {
     // Message Timestamp
     var formattedTime = moment(loc.createdAt).format("h:mm a");
 
-    // Create HTML Tags
-    var li = jQuery("<li></li>");
-    var a = jQuery("<a target='_blank'>My Current Location</a>");
-
-    // Prevent Malicious HTML Injections by using Safe Methods li.text() and a.attr() for Dynamic Data as Opposed to using HTML Tags in jQuery()
-    li.text(`${loc.from} ${formattedTime}: `);
-    a.attr("href", loc.url);
-
     // Append Ordered List on Webpage with Each Google Maps URL Link as List Item
-    li.append(a);
-    jQuery("#messages").append(li);
+    var template = jQuery("#location-message-template").html();
+    var html = Mustache.render(template, {
+        from: loc.from,
+        url: loc.url,
+        createdAt: formattedTime
+    });
+    jQuery("#messages").append(html);
 });
 
 
