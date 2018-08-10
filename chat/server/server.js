@@ -16,8 +16,9 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
-// Local Module
+// Local Modules
 const {generateMessage, generateLocationMessage} = require("./utilities/message");
+const {isRealString} = require("./utilities/validation");
 
 
 
@@ -55,11 +56,26 @@ io.on("connection", (socket) => {
 
     console.log("User Connected to Server!");
 
-    // Server Sent a Message to a User (Emit) (Custom Event)
-    socket.emit("fromServerMessage", generateMessage("Admin", "Welcome to the Chat Application!"));
+    // Put User in Chat Room (Listen) (Custom Event)
+    socket.on("join", (params, callback) => {
 
-    // Server Sent a Message to All Users Except "this" User (Emit) (Custom Event)
-    socket.broadcast.emit("fromServerMessage", generateMessage("Admin", "A New User Joined!"));
+        // Handle Invalid User Input
+        if (!isRealString(params.name) || !isRealString(params.room)) {
+            callback("Your Display Name and Room Name are Required!");
+        }
+
+        // Add User to Chat Room ("Room Name")
+        socket.join(params.room);
+
+        // Server Sent a Message to a User (Emit) (Custom Event)
+        socket.emit("fromServerMessage", generateMessage("Admin", "Welcome to the Chat Application!"));
+
+        // Server Sent a Message to All Users Except "this" User in Chat Room (Emit) (Custom Event)
+        socket.broadcast.to(params.room).emit("fromServerMessage", generateMessage("Admin", `${params.name} Joined the Chat Room!`));
+
+        // Server Sent an Acknowledgement (User's Request was Received) to User
+        callback();
+    });
 
     // Server Received a Message from a User (Listen) (Custom Event)
     socket.on("toServerMessage", (message, callback) => {

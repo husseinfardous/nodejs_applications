@@ -41,7 +41,25 @@ function scrollToBottom() {
 
 // User Connected to Server (Listen) (Core Event)
 socket.on("connect", function() {
-    console.log("Connected to Server!");
+
+    // Fetch Parameters passed into URL of Chat Webpage from Form on Join Webpage
+    var params = jQuery.deparam(window.location.search);
+
+    // User's Request to Join Chat Room Sent to Server (Emit) (Custom Event)
+    socket.emit("join", params, function(err) {
+
+        // Handle Invalid User Input
+        // Send Back to Join Webpage
+        if (err) {
+            alert(err);
+            window.location.href = "/";
+        }
+
+        // Valid User Input
+        else {
+            console.log("No Error!");
+        }
+    });
 });
 
 // User Disconnected from Server (Listen) (Core Event)
