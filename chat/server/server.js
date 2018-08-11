@@ -19,6 +19,7 @@ const socketIO = require("socket.io");
 // Local Modules
 const {generateMessage, generateLocationMessage} = require("./utilities/message");
 const {isRealString} = require("./utilities/validation");
+const {Users} = require("./utilities/users");
 
 
 
@@ -38,6 +39,9 @@ var io = socketIO(server);
 
 // Fetch Path to public/ Directory (Frontend Files are Stored there)
 const publicPath = path.join(__dirname, "../public");
+
+// Create an Instance of Users Class
+var users = new Users();
 
 // Configure Express Static Middleware
 app.use(express.static(publicPath));
@@ -61,11 +65,16 @@ io.on("connection", (socket) => {
 
         // Handle Invalid User Input
         if (!isRealString(params.name) || !isRealString(params.room)) {
-            callback("Your Display Name and Room Name are Required!");
+            return callback("Your Display Name and Room Name are Required!");
         }
 
         // Add User to Chat Room ("Room Name")
         socket.join(params.room);
+        users.removeUser(socket.id); // Remove User from Other Chat Rooms
+        users.addUser(socket.id, params.name, params.room);
+
+        // Server Sent List of Users in Chat Room to All Users in Chat Room (Emit) (Custom Event)
+        io.to(params.room).emit("updateUserList", users.getUserList(params.room));
 
         // Server Sent a Message to a User (Emit) (Custom Event)
         socket.emit("fromServerMessage", generateMessage("Admin", "Welcome to the Chat Application!"));
@@ -99,7 +108,18 @@ io.on("connection", (socket) => {
 
     // User Disconnected from Server (Listen) (Core Event)
     socket.on("disconnect", () => {
-        console.log("User Disconnected from Server!");
+
+        // Remove User from Chat Room ("Room Name")
+        var user = users.removeUser(socket.id);
+
+        if (user) {
+
+            // Server Sent List of Users in Chat Room to All Users in Chat Room (Emit) (Custom Event)
+            io.to(user.room).emit("updateUserList", users.getUserList(user.room));
+
+            // Server Sent a Message to All Users in Chat Room (Emit) (Custom Event)
+            io.to(user.room).emit("fromServerMessage", generateMessage("Admin", `${user.name} Left the Chat Room!`));
+        }
     });
 });
 

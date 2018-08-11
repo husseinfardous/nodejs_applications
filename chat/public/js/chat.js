@@ -67,6 +67,17 @@ socket.on("disconnect", function() {
     console.log("Disconnected from Server!");
 });
 
+// Update List of Users in Chat Room (Listen) (Custom Event)
+socket.on("updateUserList", function(users) {
+
+    // Store Each User as List Item in Ordered List on Webpage
+    var ol = jQuery("<ol></ol>");
+    users.forEach(function(user) {
+        ol.append(jQuery("<li></li>").text(user));
+    });
+    jQuery("#users").html(ol);
+});
+
 // User Received a Message from Server (Listen) (Custom Event)
 socket.on("fromServerMessage", function(message) {
 
