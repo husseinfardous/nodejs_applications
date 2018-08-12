@@ -17,7 +17,7 @@ A Note object consists of a Title and a Body.
 
 # Application Usage
 
-1. cd `<path-to-nodejs_applications>/note`
+1. Run `cd <path-to-nodejs_applications>/note`
 2. Run `npm install`
 3. Run `node app.js --help` to Display List of Operations
 4. Run `node app.js <operation> --help` to Display List of Required Arguments for the Operation (if any)

@@ -21,7 +21,7 @@ There are two versions of this application:
 
 # Application Usage
 
-1. cd `<path-to-nodejs_applications>/weather`
+1. Run `cd <path-to-nodejs_applications>/weather`
 2. Run `npm install`
 3. Run `node app.js -a "<address>"` or `node app-promises.js -a "<address>"`
 Example: `node app.js -a "Chalfant PA"`
