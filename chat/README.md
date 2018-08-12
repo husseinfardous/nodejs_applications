@@ -18,7 +18,7 @@ This application uses socket.io to allow different users to chat with each other
 
 This application is live on Heroku (Cloud Application Platform). Follow the link to use it.
 
-[Chat Application] (https://dry-beach-21835.herokuapp.com/)
+[Chat Application](https://dry-beach-21835.herokuapp.com/)
 
 To otherwise run the application locally:
 
