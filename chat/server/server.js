@@ -88,13 +88,19 @@ io.on("connection", (socket) => {
 
     // Server Received a Message from a User (Listen) (Custom Event)
     socket.on("toServerMessage", (message, callback) => {
-        
-        console.log("New Message:", message);
-        
-        // Server Sent a Message to All Users (Emit) (Custom Event)
-        // Message: A User's Message
-        io.emit("fromServerMessage", generateMessage(message.from, message.text));
 
+        // Get User
+        var user = users.getUser(socket.id);
+
+        // Verify User Exists
+        // Verify User's Message Contains at least One Non-White Space Character 
+        if (user && isRealString(message.text)) {
+            
+            // Server Sent a Message to All Users in Chat Room ("Room Name") (Emit) (Custom Event)
+            // Message: A User's Message
+            io.to(user.room).emit("fromServerMessage", generateMessage(user.name, message.text));
+        }
+        
         // Server Sent an Acknowledgement (User's Message was Received) to User
         callback();
     });
@@ -102,8 +108,15 @@ io.on("connection", (socket) => {
     // Server Received Location from a User (Listen) (Custom Event)
     socket.on("toServerLocation", (coordinates) => {
 
-        // Server Sent a User's Location to All Users (Emit) (Custom Event)
-        io.emit("fromServerLocation", generateLocationMessage("Admin", coordinates.latitude, coordinates.longitude));
+        // Get User
+        var user = users.getUser(socket.id);
+
+        // Verify User Exists
+        if (user) {
+
+            // Server Sent a User's Location to All Users in Chat Room ("Room Name") (Emit) (Custom Event)
+            io.to(user.room).emit("fromServerLocation", generateLocationMessage(user.name, coordinates.latitude, coordinates.longitude));
+        }
     });
 
     // User Disconnected from Server (Listen) (Core Event)

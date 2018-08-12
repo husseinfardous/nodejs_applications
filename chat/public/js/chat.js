@@ -128,7 +128,6 @@ jQuery("#message-form").on("submit", function(e) {
 
     // User Sent a Message to Server (Emit) (Custom Event)
     socket.emit("toServerMessage", {
-        from: "User",
         text: jQuery("[name=message]").val()
     }, function(response) {
         jQuery("[name=message]").val("");
