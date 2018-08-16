@@ -1,0 +1,11 @@
+{
+  "name": "secure-api",
+  "version": "1.0.0",
+  "description": "This API sets up a user model, generates authentication tokens, and hashes passwords to secure user data, and it uses mongoose to store the To-Do tasks of users in mongoDB.",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hussein Fardous",
+  "license": "ISC"
+}
