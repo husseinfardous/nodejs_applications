@@ -10,6 +10,7 @@
 // Store Exported Data as Constants
 
 // Third Party Modules
+const _ = require("lodash");
 const express = require("express");
 const bodyParser = require("body-parser");
 const {ObjectID} = require("mongodb");
@@ -44,7 +45,7 @@ app.post("/todos", (req, res) => {
         text: req.body.text
     });
 
-    // Save To-Do as Document in MongoDB Database "todo_app"
+    // Save To-Do as Document in MongoDB Database
     // Handle Errors
     todo.save().then((doc) => {
         res.send(doc);
@@ -55,7 +56,7 @@ app.post("/todos", (req, res) => {
 
 app.get("/todos", (req, res) => {
 
-    // Fetch All To-Do Documents from MongoDB Database "todo_app"
+    // Fetch All To-Do Documents from MongoDB Database
     // Handle Errors
     Todo.find().then((todos) => {
         res.send({todos});
@@ -76,9 +77,46 @@ app.get("/todos/:id", (req, res) => {
         return res.status(404).send();
     }
 
-    // Fetch To-Do Document by ID from MongoDB Database "todo_app"
+    // Fetch To-Do Document by ID from MongoDB Database
     // Handle Errors
     Todo.findById(id).then((todo) => {
+        if (!todo) {
+            return res.status(404).send();
+        }
+        res.send({todo});
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
+app.patch("/todos/:id", (req, res) => {
+
+    // Get ID from Request Parameter
+    var id = req.params.id;
+
+    // Pick Off Properties from Request Body
+    // Prevent User from Adding/Updating Unwanted To-Do Document Properties
+    var body = _.pick(req.body, ["text", "completed"]);
+
+    // Invalid ID
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    // Create Timestamp for completedAt Property in To-Do Document if completed Property is Set to True
+    if (_.isBoolean(body.completed) && body.completed) {
+        body.completedAt = new Date().getTime();
+    }
+
+    // Clean-Up if completed Property of To-Do Document is either Set to False or to a Non-Boolean Value
+    else {
+        body.completed = false;
+        body.completedAt = null;
+    }
+
+    // Fetch and Update To-Do Document by ID from MongoDB Database
+    // Handle Errors
+    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
         if (!todo) {
             return res.status(404).send();
         }
@@ -98,7 +136,7 @@ app.delete("/todos/:id", (req, res) => {
         return res.status(404).send();
     }
 
-    // Fetch and Remove To-Do Document by ID from MongoDB Database "todo_app"
+    // Fetch and Remove To-Do Document by ID from MongoDB Database
     // Handle Errors
     Todo.findByIdAndRemove(id).then((todo) => {
         if (!todo) {
