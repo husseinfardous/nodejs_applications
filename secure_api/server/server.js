@@ -35,6 +35,7 @@ app.use(bodyParser.json());
 // Routes (Endpoints)
 
 // "/todos"
+
 app.post("/todos", (req, res) => {
 
     // Create To-Do from Request Body
@@ -42,10 +43,21 @@ app.post("/todos", (req, res) => {
         text: req.body.text
     });
 
-    // Save To-Do as Document in MongoDB
+    // Save To-Do as Document in MongoDB Database "todo_app"
     // Handle Errors
     todo.save().then((doc) => {
         res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+    });
+});
+
+app.get("/todos", (req, res) => {
+
+    // Fetch All To-Do Documents from MongoDB Database "todo_app"
+    // Handle Errors
+    Todo.find().then((todos) => {
+        res.send({todos});
     }, (e) => {
         res.status(400).send(e);
     });

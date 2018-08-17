@@ -17,7 +17,9 @@ const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
 // Connect to Database in MongoDB Server
-mongoose.connect("mongodb://localhost:27017/todo_app");
+mongoose.connect("mongodb://localhost:27017/todo_app", {
+    useNewUrlParser: true
+});
 
 
 
