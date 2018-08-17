@@ -12,6 +12,7 @@
 // Third Party Modules
 const express = require("express");
 const bodyParser = require("body-parser");
+const {ObjectID} = require("mongodb");
 
 // Local Modules
 const {mongoose} = require("./db/mongoose");
@@ -60,6 +61,29 @@ app.get("/todos", (req, res) => {
         res.send({todos});
     }, (e) => {
         res.status(400).send(e);
+    });
+});
+
+// "/todos/id"
+app.get("/todos/:id", (req, res) => {
+
+    // Get ID from Request Parameter
+    var id = req.params.id;
+
+    // Invalid ID
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    // Fetch To-Do Document by ID from MongoDB Database "todo_app"
+    // Handle Errors
+    Todo.findById(id).then((todo) => {
+        if (!todo) {
+            return res.status(404).send();
+        }
+        res.send({todo});
+    }).catch((e) => {
+        res.status(400).send();
     });
 });
 
