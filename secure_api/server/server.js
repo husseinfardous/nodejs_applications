@@ -5,53 +5,55 @@
 
 
 
-// Load Module
-// Data Module Sends Back (Exports) isn't Manipulated
-// Store Exported Data as a Constant
+// Load Modules
+// Data Modules Send Back (Export) isn't Manipulated
+// Store Exported Data as Constants
 
-// Third Party Module
-const mongoose = require("mongoose");
+// Third Party Modules
+const express = require("express");
+const bodyParser = require("body-parser");
 
-
-
-// Configure Mongoose
-
-// Use Built-In Promise Library
-mongoose.Promise = global.Promise;
-
-// Connect to Database in MongoDB Server
-mongoose.connect("mongodb://localhost:27017/todo_app");
+// Local Modules
+const {mongoose} = require("./db/mongoose");
+const {Todo} = require("./models/todo");
+const {User} = require("./models/user");
 
 
 
-// Create Models
+// Configure Web Application
 
-// User Model
-// Add Type and Validator
-var User = mongoose.model("User", {
-    email: {
-        type: String,
-        required: true,
-        minlength: 1,
-        trim: true
-    }
+// Create Web Application through Call to Express
+// Create Express Server by Implicitly calling "http.createServer()"
+var app = express();
+
+// Configure Body Parser Middleware
+// Enables Express to Accept and Parse JSON Data (Request Body)
+app.use(bodyParser.json());
+
+
+
+// Routes (Endpoints)
+
+// "/todos"
+app.post("/todos", (req, res) => {
+
+    // Create To-Do from Request Body
+    var todo = new Todo({
+        text: req.body.text
+    });
+
+    // Save To-Do as Document in MongoDB
+    // Handle Errors
+    todo.save().then((doc) => {
+        res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+    });
 });
 
-// To-Do Model
-// Add Type, Validator, and Default Value
-var Todo = mongoose.model("Todo", {
-    text: {
-        type: String,
-        required: true,
-        minlength: 1,
-        trim: true
-    },
-    completed: {
-        type: Boolean,
-        default: false
-    },
-    completedAt: {
-        type: Number,
-        default: null
-    }
+
+
+// Start the Server on Port 3000
+app.listen(3000, () => {
+    console.log("Server is Running on Port 3000...");
 });
