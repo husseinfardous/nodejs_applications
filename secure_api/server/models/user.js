@@ -2,24 +2,44 @@
 
 
 
-// Load Module
-// Data Module Sends Back (Exports) isn't Manipulated
-// Store Exported Data as a Constant
+// Load Modules
+// Data Modules Send Back (Export) isn't Manipulated
+// Store Exported Data as Constants
 
-// Third Party Module
+// Third Party Modules
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 
 
 // Create User Model
-// Add Type and Validator
 var User = mongoose.model("User", {
     email: {
         type: String,
         required: true,
         minlength: 1,
-        trim: true
-    }
+        trim: true,
+        unique: true,
+        validate: {
+            validator: validator.isEmail,
+            message: "{VALUE} is not a Valid Email Address!"
+        }
+    },
+    password: {
+        type: String,
+        required: true,
+        minlength: 6
+    },
+    tokens: [{
+        access: {
+            type: String,
+            required: true
+        },
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 });
 
 

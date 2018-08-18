@@ -36,6 +36,25 @@ app.use(bodyParser.json());
 
 // Routes (Endpoints)
 
+// "/users"
+app.post("/users", (req, res) => {
+
+    // Pick Off Properties from Request Body
+    // Prevent User from Adding/Updating Unwanted User Document Properties
+    var body = _.pick(req.body, ["email", "password"]);
+
+    // Create User
+    var user = new User(body);
+
+    // Save User as Document in MongoDB Database
+    // Handle Errors
+    user.save().then((user) => {
+        res.send(user);
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+});
+
 // "/todos"
 
 app.post("/todos", (req, res) => {

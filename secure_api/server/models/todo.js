@@ -12,7 +12,6 @@ const mongoose = require("mongoose");
 
 
 // Create To-Do Model
-// Add Type, Validator, and Default Value
 var Todo = mongoose.model("Todo", {
     text: {
         type: String,
