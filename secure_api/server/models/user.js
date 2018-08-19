@@ -11,6 +11,7 @@ const _ = require("lodash");
 const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 
 
@@ -97,6 +98,27 @@ UserSchema.statics.findByToken = function(token) {
         "tokens.access": "auth"
     });
 };
+
+// Instance Method
+// Hash Password before Saving User Document
+UserSchema.pre("save", function(next) {
+
+    // Fetch Individual User Document
+    var user = this;
+
+    // Hash Password if "password" was Added/Modified
+    if (user.isModified("password")) {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            });
+        });
+    }
+    else {
+        next();
+    }
+});
 
 // Create User Model
 var User = mongoose.model("User", UserSchema);
