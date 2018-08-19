@@ -37,7 +37,7 @@ app.use(bodyParser.json());
 
 // Routes (Endpoints)
 
-// "/users" (Signup)
+// "/users" (Public) (Signup)
 app.post("/users", (req, res) => {
 
     // Pick Off Properties from Request Body
@@ -60,7 +60,7 @@ app.post("/users", (req, res) => {
     });
 });
 
-// "/users/login" (Login)
+// "/users/login" (Public) (Login)
 app.post("/users/login", (req, res) => {
 
     // Pick Off Properties from Request Body
@@ -79,7 +79,7 @@ app.post("/users/login", (req, res) => {
     });
 });
 
-// "/users/me/token" (Logout)
+// "/users/me/token" (Private) (Logout)
 app.delete("/users/me/token", authenticate, (req, res) => {
     req.user.removeToken(req.token).then(() => {
         res.status(200).send();
@@ -88,18 +88,19 @@ app.delete("/users/me/token", authenticate, (req, res) => {
     });
 });
 
-// "/users/me"
+// "/users/me" (Private)
 app.get("/users/me", authenticate, (req, res) => {
     res.send(req.user);
 });
 
-// "/todos"
+// "/todos" (Private)
 
-app.post("/todos", (req, res) => {
+app.post("/todos", authenticate, (req, res) => {
 
     // Create To-Do from Request Body
     var todo = new Todo({
-        text: req.body.text
+        text: req.body.text,
+        _creator: req.user._id
     });
 
     // Save To-Do as Document in MongoDB Database
@@ -111,20 +112,22 @@ app.post("/todos", (req, res) => {
     });
 });
 
-app.get("/todos", (req, res) => {
+app.get("/todos", authenticate, (req, res) => {
 
-    // Fetch All To-Do Documents from MongoDB Database
+    // Fetch All To-Do Documents for Logged In User from MongoDB Database
     // Handle Errors
-    Todo.find().then((todos) => {
+    Todo.find({
+        _creator: req.user._id
+    }).then((todos) => {
         res.send({todos});
     }, (e) => {
         res.status(400).send(e);
     });
 });
 
-// "/todos/<id>"
+// "/todos/<id>" (Private)
 
-app.get("/todos/:id", (req, res) => {
+app.get("/todos/:id", authenticate, (req, res) => {
 
     // Get ID from Request Parameter
     var id = req.params.id;
@@ -134,9 +137,12 @@ app.get("/todos/:id", (req, res) => {
         return res.status(404).send();
     }
 
-    // Fetch To-Do Document by ID from MongoDB Database
+    // Fetch To-Do Document by ID for Logged In User from MongoDB Database
     // Handle Errors
-    Todo.findById(id).then((todo) => {
+    Todo.findOne({
+        _id: id,
+        _creator: req.user._id
+    }).then((todo) => {
         if (!todo) {
             return res.status(404).send();
         }
@@ -146,7 +152,7 @@ app.get("/todos/:id", (req, res) => {
     });
 });
 
-app.patch("/todos/:id", (req, res) => {
+app.patch("/todos/:id", authenticate, (req, res) => {
 
     // Get ID from Request Parameter
     var id = req.params.id;
@@ -171,9 +177,12 @@ app.patch("/todos/:id", (req, res) => {
         body.completedAt = null;
     }
 
-    // Fetch and Update To-Do Document by ID from MongoDB Database
+    // Fetch and Update To-Do Document by ID for Logged In User from MongoDB Database
     // Handle Errors
-    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    Todo.findOneAndUpdate({
+        _id: id,
+        _creator: req.user._id
+    }, {$set: body}, {new: true}).then((todo) => {
         if (!todo) {
             return res.status(404).send();
         }
@@ -183,7 +192,7 @@ app.patch("/todos/:id", (req, res) => {
     });
 });
 
-app.delete("/todos/:id", (req, res) => {
+app.delete("/todos/:id", authenticate, (req, res) => {
 
     // Get ID from Request Parameter
     var id = req.params.id;
@@ -193,9 +202,12 @@ app.delete("/todos/:id", (req, res) => {
         return res.status(404).send();
     }
 
-    // Fetch and Remove To-Do Document by ID from MongoDB Database
+    // Fetch and Remove To-Do Document by ID for Logged In User from MongoDB Database
     // Handle Errors
-    Todo.findByIdAndRemove(id).then((todo) => {
+    Todo.findOneAndRemove({
+        _id: id,
+        _creator: req.user._id
+    }).then((todo) => {
         if (!todo) {
             return res.status(404).send();
         }
