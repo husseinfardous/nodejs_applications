@@ -9,11 +9,12 @@
 // Third Party Modules
 const mongoose = require("mongoose");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 
 
-// Create User Model
-var User = mongoose.model("User", {
+// Create User Schema (Allows Custom Methods)
+var UserSchema = new mongoose.schema({
     email: {
         type: String,
         required: true,
@@ -41,6 +42,29 @@ var User = mongoose.model("User", {
         }
     }]
 });
+
+// Generate Authentication Token
+// Add Token to tokens Array in User Document
+UserSchema.methods.generateAuthToken = function() {
+
+    // Fetch Individual User Document
+    var user = this;
+
+    // Set Token Access
+    var access = "auth";
+
+    // Generate Authentication Token 
+    var token = jwt.sign({_id: user._id.toHexString(), access}, "abc123").toString();
+
+    // Add Access and Token to tokens Array in User Document
+    user.tokens = user.tokens.concat([{access, token}]);
+    return user.save().then(() => {
+        return token;
+    });
+};
+
+// Create User Model
+var User = mongoose.model("User", UserSchema);
 
 
 
