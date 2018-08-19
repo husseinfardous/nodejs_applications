@@ -99,6 +99,32 @@ UserSchema.statics.findByToken = function(token) {
     });
 };
 
+// Model Method
+// Fetch User Document with Given Credentials
+UserSchema.statics.findByCredentials = function(email, password) {
+
+    // Fetch User Model
+    var User = this;
+
+    // Fetch User Document with Given Email
+    // Verify Password given by User
+    return User.findOne({email}).then((user) => {
+        if (!user) {
+            return Promise.reject();
+        }
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, res) => {
+                if (res) {
+                    resolve(user);
+                }
+                else {
+                    reject();
+                }
+            });
+        });
+    });
+};
+
 // Instance Method
 // Hash Password before Saving User Document
 UserSchema.pre("save", function(next) {

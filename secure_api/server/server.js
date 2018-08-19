@@ -37,7 +37,7 @@ app.use(bodyParser.json());
 
 // Routes (Endpoints)
 
-// "/users"
+// "/users" (Signup)
 app.post("/users", (req, res) => {
 
     // Pick Off Properties from Request Body
@@ -57,6 +57,25 @@ app.post("/users", (req, res) => {
         res.header("x-auth", token).send(user);
     }).catch((e) => {
         res.status(400).send(e);
+    });
+});
+
+// "/users/login" (Login)
+app.post("/users/login", (req, res) => {
+
+    // Pick Off Properties from Request Body
+    // Prevent User from Adding/Updating Unwanted User Document Properties
+    var body = _.pick(req.body, ["email", "password"]);
+
+    // Fetch User Document by Given Credentials
+    // Send Token as "x-auth" Header
+    // Handle Errors
+    User.findByCredentials(body.email, body.password).then((user) => {
+        return user.generateAuthToken().then((token) => {
+            res.header("x-auth", token).send(user);
+        });
+    }).catch((e) => {
+        res.status(400).send();
     });
 });
 
