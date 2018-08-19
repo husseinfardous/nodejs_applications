@@ -44,6 +44,7 @@ var UserSchema = new mongoose.Schema({
     }]
 });
 
+// Instance Method
 // Only Return "_id" and "email" Properties of User Document
 UserSchema.methods.toJSON = function() {
     var user = this;
@@ -51,6 +52,7 @@ UserSchema.methods.toJSON = function() {
     return _.pick(userObject, ["_id", "email"]);
 };
 
+// Instance Method
 // Generate Authentication Token
 // Add Token to tokens Array in User Document
 UserSchema.methods.generateAuthToken = function() {
@@ -68,6 +70,31 @@ UserSchema.methods.generateAuthToken = function() {
     user.tokens = user.tokens.concat([{access, token}]);
     return user.save().then(() => {
         return token;
+    });
+};
+
+// Model Method
+// Fetch User Document with Given Token
+UserSchema.statics.findByToken = function(token) {
+
+    // Fetch User Model
+    var User = this;
+
+    // Verify Token given by User
+    // Handle Errors (such as an Invalid/Altered Token)
+    var decoded;
+    try {
+        decoded = jwt.verify(token, "abc123");
+    }
+    catch(e) {
+        return Promise.reject();
+    }
+
+    // Fetch User Document with Given Token
+    return User.findOne({
+        _id: decoded._id,
+        "tokens.token": token,
+        "tokens.access": "auth"
     });
 };
 
