@@ -46,10 +46,14 @@ app.post("/users", (req, res) => {
     // Create User
     var user = new User(body);
 
+    // Generate Authentication Token
     // Save User as Document in MongoDB Database
+    // Send Token as "x-auth" Header
     // Handle Errors
-    user.save().then((user) => {
-        res.send(user);
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header("x-auth", token).send(user);
     }).catch((e) => {
         res.status(400).send(e);
     });

@@ -7,6 +7,7 @@
 // Store Exported Data as Constants
 
 // Third Party Modules
+const _ = require("lodash");
 const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
@@ -14,7 +15,7 @@ const jwt = require("jsonwebtoken");
 
 
 // Create User Schema (Allows Custom Methods)
-var UserSchema = new mongoose.schema({
+var UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -42,6 +43,13 @@ var UserSchema = new mongoose.schema({
         }
     }]
 });
+
+// Only Return "_id" and "email" Properties of User Document
+UserSchema.methods.toJSON = function() {
+    var user = this;
+    var userObject = user.toObject();
+    return _.pick(userObject, ["_id", "email"]);
+};
 
 // Generate Authentication Token
 // Add Token to tokens Array in User Document
