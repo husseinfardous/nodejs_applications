@@ -65,7 +65,7 @@ UserSchema.methods.generateAuthToken = function() {
     var access = "auth";
 
     // Generate Authentication Token 
-    var token = jwt.sign({_id: user._id.toHexString(), access}, "abc123").toString();
+    var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
     // Add Access and Token to tokens Array in User Document
     user.tokens = user.tokens.concat([{access, token}]);
@@ -100,7 +100,7 @@ UserSchema.statics.findByToken = function(token) {
     // Handle Errors (such as an Invalid/Altered Token)
     var decoded;
     try {
-        decoded = jwt.verify(token, "abc123");
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
     }
     catch(e) {
         return Promise.reject();

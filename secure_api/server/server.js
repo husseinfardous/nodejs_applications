@@ -16,6 +16,7 @@ const bodyParser = require("body-parser");
 const {ObjectID} = require("mongodb");
 
 // Local Modules
+require("./config/config");
 const {mongoose} = require("./db/mongoose");
 const {Todo} = require("./models/todo");
 const {User} = require("./models/user");
@@ -24,6 +25,9 @@ const {authenticate} = require("./middleware/authenticate");
 
 
 // Configure Web Application
+
+// Configure Port for Testing, Development, and for Production (Heroku)
+const port = process.env.PORT;
 
 // Create Web Application through Call to Express
 // Create Express Server by Implicitly calling "http.createServer()"
@@ -219,7 +223,7 @@ app.delete("/todos/:id", authenticate, (req, res) => {
 
 
 
-// Start the Server on Port 3000
-app.listen(3000, () => {
-    console.log("Server is Running on Port 3000...");
+// Start the Server on Port Given by Heroku or on Port 3000
+app.listen(port, () => {
+    console.log(`Server is Running on Port ${port}...`);
 });

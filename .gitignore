@@ -2,3 +2,4 @@
 /weather/node_modules/
 /chat/node_modules/
 /secure_api/node_modules/
+# /secure_api/server/config/config.json -> Shouldn't Commit this File
