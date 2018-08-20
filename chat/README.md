@@ -23,7 +23,7 @@ This application is live on Heroku (Cloud Application Platform). Follow the link
 To otherwise run the application locally:
 
 1. Run `cd <path-to-nodejs_applications>/chat`
-2. Run `npm nstall`
+2. Run `npm install`
 3. Run `node server/server.js`
 4. Go to `localhost:3000`
 
