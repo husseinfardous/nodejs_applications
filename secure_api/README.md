@@ -81,15 +81,15 @@ This route is for creating a new To-Do task for the logged-in user. A request bo
 
 This route is for fetching the logged-in user's To-Do tasks.
 
-#### GET /todos/<id>
+#### GET /todos/id
 
 This route is for fetching the logged-in user's To-Do task by ID.
 
-#### PATCH /todos/<id>
+#### PATCH /todos/id
 
 This route is for fetching and updating the logged-in user's To-Do task by ID. A request body may be sent with the values for the `text` (optional) and `completed` (optional) keys in JSON format.
 
-#### DELETE /todos/<id>
+#### DELETE /todos/id
 
 This route is for fetching and removing the logged-in user's To-Do task by ID.
 
